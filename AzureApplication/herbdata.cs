@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -10,7 +11,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace AzureApplication
 {
-    public static class herbdata
+    public static class Herbdata
     {
         [FunctionName("herbdata")]
         public static async System.Threading.Tasks.Task<HttpResponseMessage> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "herbdata/{name}")]HttpRequestMessage req, string name, TraceWriter log)
@@ -32,7 +33,7 @@ namespace AzureApplication
                 fileContent[i] = 0x20;
             }
             blobRef.DownloadToByteArray(fileContent, 0);
-            return req.CreateResponse(HttpStatusCode.OK, fileContent);
+            return req.CreateResponse(HttpStatusCode.OK, Encoding.UTF8.GetString(fileContent, 1, fileContent.Length - 1));
         }
     }
 }
